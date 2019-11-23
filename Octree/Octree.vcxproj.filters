@@ -25,10 +25,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Octree32.asm" />
+    <CustomBuild Include="Octree64.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Octree64.asm">
+    <None Include="src\Octree32.asm">
+      <Filter>Octree</Filter>
+    </None>
+    <None Include="src\Octree64.asm">
       <Filter>Octree</Filter>
     </None>
   </ItemGroup>

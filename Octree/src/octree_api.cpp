@@ -3,7 +3,7 @@
 #include "../include/octree.hpp"
 
 gk3::Octree* __cdecl CreateOctree() {
-  return new gk3::Octree();
+  return new gk3::Octree;
 }
 
 void __cdecl DestroyOctree(gk3::Octree* octree) {

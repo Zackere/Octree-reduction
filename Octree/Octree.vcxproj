@@ -27,27 +27,19 @@
     <ClInclude Include="include\octree_api.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Octree32.asm">
+    <CustomBuild Include="src\Octree32.asm">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ML /c Octree32.asm</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octree32.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ML /c /Zi Octree32.asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ML /c /Zi src/Octree32.asm</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Octree32.obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ML /c src/Octree32.asm</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octree32.obj</Outputs>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="Octree64.asm">
+    <CustomBuild Include="src\Octree64.asm">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ML64 /c Octree64.asm</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Octree64.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ML64 /c /Zi Octree64.asm</Command>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Octree64.obj</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ML64 /c Octree64.asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ML64 /c src/Octree64.asm</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Octree64.obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ML64 /c /Zi src/Octree64.asm</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Octree64.obj</Outputs>
     </CustomBuild>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -73,7 +65,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>ClangCL</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
