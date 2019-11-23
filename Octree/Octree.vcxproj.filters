@@ -11,18 +11,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Octree.cpp">
+    <ClCompile Include="src\octree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Octree_api.cpp">
+    <ClCompile Include="src\octree_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Octree.hpp">
+    <ClInclude Include="include\octree.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Octree_api.hpp">
+    <ClInclude Include="include\octree_api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,6 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\octree.cpp" />
+    <ClCompile Include="src\octree_api.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\octree.hpp" />
+    <ClInclude Include="include\octree_api.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{AEEA2066-6B2D-438B-8E34-72D3C444E89C}</ProjectGuid>
@@ -123,14 +131,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Octree.cpp" />
-    <ClCompile Include="Octree_api.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Octree.hpp" />
-    <ClInclude Include="Octree_api.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

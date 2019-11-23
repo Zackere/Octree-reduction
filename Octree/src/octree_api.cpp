@@ -1,6 +1,6 @@
-#include "Octree_api.hpp"
+#include "../include/octree_api.hpp"
 
-#include "./Octree.hpp"
+#include "../include/octree.hpp"
 
 gk3::Octree* CreateOctree() {
   return new gk3::Octree();
