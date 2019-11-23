@@ -2,7 +2,7 @@
 
 namespace gk3 {
 namespace {
-extern "C" uint8_t GetNthBit(int number, int n);
+extern "C" uint8_t __cdecl GetNthBit(uint32_t number, uint8_t n);
 }  // namespace
 Octree::Octree() {}
 

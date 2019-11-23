@@ -9,5 +9,6 @@ class Octree {
   void InsertColor(uint32_t color);
 
  private:
+  class OctreeNode {};
 };
 }  // namespace gk3

@@ -1,12 +1,12 @@
 .code
 
-; uint8_t GetNthBit(int number, int n)
-;                   RCX,        RDX
+; uint8_t __cdecl GetNthBit(uint32_t number, uint8_t n);
+;                                    RCX             RDX
 GetNthBit proc
-    mov rax, rcx
+    mov eax, ecx
     mov cl, dl
-    shr rax, cl
-    and rax, 1
+    shr eax, cl
+    and eax, 1
     ret
 GetNthBit endp
 

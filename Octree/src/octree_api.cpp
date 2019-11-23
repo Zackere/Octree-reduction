@@ -2,14 +2,14 @@
 
 #include "../include/octree.hpp"
 
-gk3::Octree* CreateOctree() {
+gk3::Octree* __cdecl CreateOctree() {
   return new gk3::Octree();
 }
 
-void DestroyOctree(gk3::Octree* octree) {
+void __cdecl DestroyOctree(gk3::Octree* octree) {
   delete octree;
 }
 
-void InsertColor(gk3::Octree* octree, uint32_t color) {
+void __cdecl InsertColor(gk3::Octree* octree, uint32_t color) {
   octree->InsertColor(color);
 }

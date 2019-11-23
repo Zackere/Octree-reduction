@@ -1,15 +1,12 @@
 .model flat
 .code
 
-; uint8_t GetNthBit(int number, int n)
+; uint8_t __cdecl GetNthBit(uint32_t number, uint8_t n);
 _GetNthBit proc
-    push ebp
-    mov ebp, esp
-    mov eax, [ebp + 8]
-    mov cl, [ebp + 16]
+    mov eax, [esp + 4]
+    mov cl, [esp + 8]
     shr eax, cl
     and eax, 1
-    pop ebp
     ret
 _GetNthBit endp
 
