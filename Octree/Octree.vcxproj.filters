@@ -1,29 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Octree">
+      <UniqueIdentifier>{53e40136-e7bf-46c5-a4f7-9fd6267ce8c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="DllApi">
+      <UniqueIdentifier>{ed08dab1-1301-4c98-a36e-c02849cb2078}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\octree.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Octree</Filter>
     </ClCompile>
     <ClCompile Include="src\octree_api.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>DllApi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\octree.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Octree</Filter>
     </ClInclude>
     <ClInclude Include="include\octree_api.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>DllApi</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Octree32.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Octree64.asm">
+      <Filter>Octree</Filter>
+    </None>
   </ItemGroup>
 </Project>

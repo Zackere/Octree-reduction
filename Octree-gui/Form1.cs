@@ -14,6 +14,7 @@ namespace Octree_gui {
             InitializeComponent();
 
             octree = new Octree();
+            octree.InsertColor(Color.Red);
         }
 
         private Octree octree;
