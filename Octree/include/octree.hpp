@@ -10,6 +10,8 @@ class Octree {
   Octree();
   void InsertColor(uint32_t color);
   void Reduce(unsigned max_colors);
+  uint32_t FromPallete(uint32_t color);
+  void Clear();
 
  private:
   struct OctreeNode {
@@ -17,6 +19,7 @@ class Octree {
     uint64_t r = 0, g = 0, b = 0;
     std::unique_ptr<OctreeNode> children[8] = {nullptr};
     int Reduce();
+    uint64_t ChildrenRefSum();
   };
   std::unique_ptr<OctreeNode> root_ = nullptr;
   std::set<OctreeNode*> nodes_on_level_[8];
