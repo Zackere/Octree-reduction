@@ -14,11 +14,12 @@ class Octree {
   void Clear();
 
  private:
-  static constexpr unsigned kMaxDepth = 6;
+  static constexpr unsigned kMaxDepth = 5;
+  static constexpr unsigned kNumBitsPerByte = 8;
   struct OctreeNode {
     uint64_t refs = 0, level = 0;
     uint64_t r = 0, g = 0, b = 0;
-    std::unique_ptr<OctreeNode> children[8] = {nullptr};
+    std::unique_ptr<OctreeNode> children[kNumBitsPerByte] = {nullptr};
     int Reduce();
     uint64_t ChildrenRefSum();
   };
