@@ -22,14 +22,17 @@ namespace Octree_gui {
 
             mainDirectBitmap = new DirectBitmap(pictureBox1.Width - pictureBox1.Padding.Horizontal, pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = mainDirectBitmap.Bitmap;
-            reducedDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
-            pictureBox2.Image = reducedDirectBitmap.Bitmap;
-            octree = new Octree();
+            reducedAfterDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
+            pictureBox2.Image = reducedAfterDirectBitmap.Bitmap;
+            octreeReduceAfter = new Octree();
+            reducedOnInsertBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
+            pictureBox3.Image = reducedOnInsertBitmap.Bitmap;
+            octreeReduceOnInsert = new Octree();
         }
 
-        private Octree octree;
+        private Octree octreeReduceAfter, octreeReduceOnInsert;
         private DirectBitmap mainDirectBitmap;
-        private DirectBitmap reducedDirectBitmap;
+        private DirectBitmap reducedAfterDirectBitmap, reducedOnInsertBitmap;
 
         private void button2_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
@@ -43,20 +46,46 @@ namespace Octree_gui {
                         mainDirectBitmap.SetPixel(i, j, Image.GetPixel(i, j));
                 pictureBox1.Image = mainDirectBitmap.Bitmap;
 
-                reducedDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
-                pictureBox2.Image = reducedDirectBitmap.Bitmap;
+                reducedAfterDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
+                pictureBox2.Image = reducedAfterDirectBitmap.Bitmap;
+
+                reducedOnInsertBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
+                pictureBox3.Image = reducedOnInsertBitmap.Bitmap;
             }
         }
 
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) {
+
+        }
+
         private void button1_Click(object sender, EventArgs e) {
-            octree.Clear();
-            for (int i = 0; i < mainDirectBitmap.Width; ++i)
-                for (int j = 0; j < mainDirectBitmap.Height; ++j)
-                    octree.InsertColor(mainDirectBitmap.GetPixel(i, j));
-            octree.Reduce((uint)Math.Pow(2, trackBar1.Value));
-            for (int i = 0; i < mainDirectBitmap.Width; ++i)
-                for (int j = 0; j < mainDirectBitmap.Height; ++j)
-                    reducedDirectBitmap.SetPixel(i, j, Color.FromArgb((int)octree.FromPallete(mainDirectBitmap.GetPixel(i, j))));
+            octreeReduceAfter.Clear();
+            octreeReduceOnInsert.Clear();
+            uint max_colors = (uint)Math.Pow(2, trackBar1.Value);
+            Thread t1 = new Thread(() => {
+                for (int i = 0; i < mainDirectBitmap.Width; ++i)
+                    for (int j = 0; j < mainDirectBitmap.Height; ++j)
+                        octreeReduceAfter.InsertColor(mainDirectBitmap.GetPixel(i, j));
+                octreeReduceAfter.Reduce(max_colors);
+                for (int i = 0; i < mainDirectBitmap.Width; ++i)
+                    for (int j = 0; j < mainDirectBitmap.Height; ++j)
+                        reducedAfterDirectBitmap.SetPixel(i, j, Color.FromArgb((int)octreeReduceAfter.FromPallete(mainDirectBitmap.GetPixel(i, j))));
+            });
+            Thread t2 = new Thread(() => {
+                for (int i = 0; i < mainDirectBitmap.Width; ++i)
+                    for (int j = 0; j < mainDirectBitmap.Height; ++j) {
+                        octreeReduceOnInsert.InsertColor(mainDirectBitmap.GetPixel(i, j));
+                        octreeReduceOnInsert.Reduce(max_colors);
+                    }
+                for (int i = 0; i < mainDirectBitmap.Width; ++i)
+                    for (int j = 0; j < mainDirectBitmap.Height; ++j)
+                        reducedOnInsertBitmap.SetPixel(i, j, Color.FromArgb((int)octreeReduceOnInsert.FromPallete(mainDirectBitmap.GetPixel(i, j))));
+            });
+            t1.Start();
+            t2.Start();
+            t2.Join();
+            Refresh();
+            t1.Join();
             Refresh();
         }
 
