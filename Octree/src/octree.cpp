@@ -11,7 +11,7 @@ Octree::Octree() : root_(new OctreeNode) {
 void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
   uint8_t index = 0;
   auto* cur_node = root_.get();
-  for (uint8_t i = 1; i < 8; ++i) {
+  for (uint8_t i = 1; i < kMaxDepth; ++i) {
     index = GetIndex(8 - i, color);
     if (!cur_node->children[index]) {
       nodes_on_level_[i].insert(
@@ -20,11 +20,11 @@ void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
     }
     cur_node = cur_node->children[index].get();
   }
-  last_nonempty_set_ = 7;
-  index = GetIndex(0, color);
+  last_nonempty_set_ = kMaxDepth - 1;
+  index = GetIndex(8 - kMaxDepth, color);
   if (!cur_node->children[index]) {
     cur_node->children[index] = std::make_unique<OctreeNode>();
-    cur_node->children[index]->level = 8;
+    cur_node->children[index]->level = kMaxDepth;
     ++number_of_leaves_;
   }
   cur_node = cur_node->children[index].get();
@@ -60,7 +60,7 @@ void Octree::Reduce(unsigned max_colors) {
 uint32_t Octree::FromPallete(uint32_t color) {
   uint8_t index = 0;
   auto* cur_node = root_.get();
-  for (uint8_t i = 1; i < 9 && !cur_node->refs; ++i) {
+  for (uint8_t i = 1; i < kMaxDepth && !cur_node->refs; ++i) {
     index = GetIndex(8 - i, color);
     if (!cur_node)
       return 0;

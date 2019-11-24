@@ -14,6 +14,7 @@ class Octree {
   void Clear();
 
  private:
+  static constexpr unsigned kMaxDepth = 6;
   struct OctreeNode {
     uint64_t refs = 0, level = 0;
     uint64_t r = 0, g = 0, b = 0;
@@ -22,7 +23,7 @@ class Octree {
     uint64_t ChildrenRefSum();
   };
   std::unique_ptr<OctreeNode> root_ = nullptr;
-  std::set<OctreeNode*> nodes_on_level_[8];
+  std::set<OctreeNode*> nodes_on_level_[kMaxDepth];
   uint8_t last_nonempty_set_ = 0;
   uint64_t number_of_leaves_ = 0;
 };
