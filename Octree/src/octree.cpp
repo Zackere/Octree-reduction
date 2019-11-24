@@ -60,7 +60,7 @@ void Octree::Reduce(unsigned max_colors) {
 uint32_t Octree::FromPallete(uint32_t color) {
   uint8_t index = 0;
   auto* cur_node = root_.get();
-  for (uint8_t i = 1; i < kMaxDepth && !cur_node->refs; ++i) {
+  for (uint8_t i = 1; i <= kMaxDepth && !cur_node->refs; ++i) {
     index = GetIndex(kNumBitsPerByte - i, color);
     if (!cur_node)
       return 0;
