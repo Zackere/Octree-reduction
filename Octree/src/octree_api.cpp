@@ -14,8 +14,8 @@ void __cdecl InsertColor(gk3::Octree* octree, uint32_t color) {
   octree->InsertColor(color);
 }
 
-void __cdecl Reduce(gk3::Octree* octree, unsigned max_colors) {
-  octree->Reduce(max_colors);
+uint64_t __cdecl Reduce(gk3::Octree* octree, unsigned max_colors) {
+  return octree->Reduce(max_colors);
 }
 
 uint32_t __cdecl FromPallete(gk3::Octree* octree, unsigned max_colors) {

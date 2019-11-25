@@ -14,11 +14,7 @@ namespace Octree_gui {
         public Form1() {
             InitializeComponent();
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Reduce to ");
-            sb.Append(Math.Pow(2, trackBar1.Value));
-            sb.Append(" color(s)");
-            button1.Text = sb.ToString();
+            trackBar1_ValueChanged(null, null);
 
             mainDirectBitmap = new DirectBitmap(pictureBox1.Width - pictureBox1.Padding.Horizontal, pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = mainDirectBitmap.Bitmap;
@@ -33,6 +29,15 @@ namespace Octree_gui {
         private Octree octreeReduceAfter, octreeReduceOnInsert;
         private DirectBitmap mainDirectBitmap;
         private DirectBitmap reducedAfterDirectBitmap, reducedOnInsertBitmap;
+        private bool enableButtons = false;
+        private BackgroundWorker t1, t2;
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+            if (!button1.Enabled) {
+                MessageBox.Show("Work in progress. Please Wait.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Cancel = true;
+            }
+        }
 
         private void button2_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
@@ -54,15 +59,15 @@ namespace Octree_gui {
             }
         }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) {
-
-        }
-
         private void button1_Click(object sender, EventArgs e) {
             octreeReduceAfter.Clear();
             octreeReduceOnInsert.Clear();
-            uint max_colors = (uint)Math.Pow(2, trackBar1.Value);
-            Thread t1 = new Thread(() => {
+            uint max_colors = 7 + (uint)Math.Pow(1.5, trackBar1.Value);
+            button1.Enabled = button2.Enabled = enableButtons = false;
+            if (t1 != null)
+                t1.Dispose();
+            t1 = new BackgroundWorker();
+            t1.DoWork += (_, __) => {
                 for (int i = 0; i < mainDirectBitmap.Width; ++i)
                     for (int j = 0; j < mainDirectBitmap.Height; ++j)
                         octreeReduceAfter.InsertColor(mainDirectBitmap.GetPixel(i, j));
@@ -70,8 +75,17 @@ namespace Octree_gui {
                 for (int i = 0; i < mainDirectBitmap.Width; ++i)
                     for (int j = 0; j < mainDirectBitmap.Height; ++j)
                         reducedAfterDirectBitmap.SetPixel(i, j, Color.FromArgb((int)octreeReduceAfter.FromPallete(mainDirectBitmap.GetPixel(i, j))));
-            });
-            Thread t2 = new Thread(() => {
+            };
+            t1.RunWorkerCompleted += (_, __) => {
+                Refresh();
+                button1.Enabled = button2.Enabled = ControlBox = enableButtons;
+                enableButtons = true;
+            };
+            t1.WorkerSupportsCancellation = true;
+            if (t2 != null)
+                t2.Dispose();
+            t2 = new BackgroundWorker();
+            t2.DoWork += (_, __) => {
                 for (int i = 0; i < mainDirectBitmap.Width; ++i)
                     for (int j = 0; j < mainDirectBitmap.Height; ++j) {
                         octreeReduceOnInsert.InsertColor(mainDirectBitmap.GetPixel(i, j));
@@ -80,19 +94,20 @@ namespace Octree_gui {
                 for (int i = 0; i < mainDirectBitmap.Width; ++i)
                     for (int j = 0; j < mainDirectBitmap.Height; ++j)
                         reducedOnInsertBitmap.SetPixel(i, j, Color.FromArgb((int)octreeReduceOnInsert.FromPallete(mainDirectBitmap.GetPixel(i, j))));
-            });
-            t1.Start();
-            t2.Start();
-            t2.Join();
-            Refresh();
-            t1.Join();
-            Refresh();
+            };
+            t2.RunWorkerCompleted += (_, __) => {
+                Refresh();
+                button1.Enabled = button2.Enabled = enableButtons;
+                enableButtons = true;
+            };
+            t1.RunWorkerAsync();
+            t2.RunWorkerAsync();
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e) {
             StringBuilder sb = new StringBuilder();
             sb.Append("Reduce to ");
-            sb.Append(Math.Pow(2, trackBar1.Value));
+            sb.Append(7 + (uint)Math.Pow(1.5, trackBar1.Value));
             sb.Append(" color(s)");
             button1.Text = sb.ToString();
         }

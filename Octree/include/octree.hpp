@@ -10,7 +10,7 @@ class Octree {
  public:
   Octree();
   void InsertColor(uint32_t color);
-  void Reduce(unsigned max_colors);
+  uint64_t Reduce(unsigned max_colors);
   uint32_t FromPallete(uint32_t color);
   void Clear();
 

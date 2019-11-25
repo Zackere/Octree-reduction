@@ -42,11 +42,11 @@ void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
   cur_node->r += color & 0xFF;
 }
 
-void Octree::Reduce(unsigned max_colors) {
-  if (max_colors == 0)
-    return;
+uint64_t Octree::Reduce(unsigned max_colors) {
+  if (max_colors == 0 || number_of_leaves_ <= max_colors)
+    return number_of_leaves_;
   CalculateChildrenRefSums();
-  while (number_of_leaves_ > max_colors) {
+  if (number_of_leaves_ > max_colors) {
     auto* min_refs_node = *nodes_on_level_[last_nonempty_set_].begin();
     auto min_refs = min_refs_node->children_ref_sum;
     for (auto* node : nodes_on_level_[last_nonempty_set_]) {
@@ -61,6 +61,7 @@ void Octree::Reduce(unsigned max_colors) {
     while (nodes_on_level_[last_nonempty_set_].empty())
       --last_nonempty_set_;
   }
+  return number_of_leaves_;
 }
 
 uint32_t Octree::FromPallete(uint32_t color) {
