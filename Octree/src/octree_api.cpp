@@ -25,3 +25,7 @@ uint32_t __cdecl FromPallete(gk3::Octree* octree, unsigned max_colors) {
 void __cdecl Clear(gk3::Octree* octree) {
   octree->Clear();
 }
+
+void __cdecl SetOptimizationLevel(gk3::Octree* octree, unsigned level) {
+  octree->SetOptimizationLevel(level);
+}

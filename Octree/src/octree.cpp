@@ -7,13 +7,14 @@ namespace {
 extern "C" uint8_t __cdecl GetIndex(uint8_t iteration, uint32_t color);
 }  // namespace
 Octree::Octree() : root_(new OctreeNode) {
+  nodes_on_level_ = std::vector<std::set<OctreeNode*>>(max_depth_);
   nodes_on_level_[0].insert(root_.get());
 }
 
 void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
   uint8_t child_index = 0, i;
   auto* cur_node = root_.get();
-  for (i = 1; i < kMaxDepth && !cur_node->refs; ++i) {
+  for (i = 1; i < max_depth_ && !cur_node->refs; ++i) {
     child_index = GetIndex(kNumBitsPerByte - i, color);
     if (!cur_node->children[child_index]) {
       nodes_on_level_[i].insert(
@@ -28,7 +29,7 @@ void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
     child_index = GetIndex(kNumBitsPerByte - i, color);
     if (!cur_node->children[child_index]) {
       cur_node->children[child_index] = std::make_unique<OctreeNode>();
-      cur_node->children[child_index]->level = kMaxDepth;
+      cur_node->children[child_index]->level = max_depth_;
       ++number_of_leaves_;
     }
     cur_node = cur_node->children[child_index].get();
@@ -66,7 +67,7 @@ void Octree::Reduce(unsigned max_colors) {
 uint32_t Octree::FromPallete(uint32_t color) {
   uint8_t child_index = 0;
   auto* cur_node = root_.get();
-  for (uint8_t i = 1; i <= kMaxDepth && !cur_node->refs; ++i) {
+  for (uint8_t i = 1; i <= max_depth_ && !cur_node->refs; ++i) {
     child_index = GetIndex(kNumBitsPerByte - i, color);
     if (!cur_node)
       return 0;
@@ -86,9 +87,26 @@ void Octree::Clear() {
   last_nonempty_set_ = number_of_leaves_ = 0;
   for (auto& child : root_->children)
     child.reset();
-  for (auto& set : nodes_on_level_)
-    set.clear();
+  nodes_on_level_ = std::vector<std::set<OctreeNode*>>(max_depth_);
   nodes_on_level_[0].insert(root_.get());
+}
+
+void Octree::SetOptimizationLevel(unsigned level) {
+  switch (level) {
+    default:
+    case 0:
+      max_depth_ = 8;
+      break;
+    case 1:
+      max_depth_ = 7;
+      break;
+    case 2:
+      max_depth_ = 6;
+      break;
+    case 3:
+      max_depth_ = 5;
+      break;
+  }
 }
 
 void Octree::CalculateChildrenRefSums() {}

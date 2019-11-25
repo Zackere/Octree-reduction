@@ -16,4 +16,6 @@ OCTREE_API void __cdecl Reduce(gk3::Octree* octree, unsigned max_colors);
 OCTREE_API uint32_t __cdecl FromPallete(gk3::Octree* octree,
                                         unsigned max_colors);
 OCTREE_API void __cdecl Clear(gk3::Octree* octree);
+OCTREE_API void __cdecl SetOptimizationLevel(gk3::Octree* octree,
+                                             unsigned level);
 }
