@@ -15,8 +15,7 @@ namespace Octree_gui {
             InsertColor(OctreePtr, (uint)color.ToArgb());
         }
         public void Reduce(uint max_colors) {
-            while (Reduce(OctreePtr, max_colors) > max_colors) {
-            }
+            Reduce(OctreePtr, max_colors);
         }
         public uint FromPallete(Color color) {
             return FromPallete(OctreePtr, (uint)color.ToArgb());
@@ -33,7 +32,7 @@ namespace Octree_gui {
         [DllImport("Octree.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern void InsertColor(IntPtr octree, uint color);
         [DllImport("Octree.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern uint Reduce(IntPtr octree, uint max_colors);
+        private static extern void Reduce(IntPtr octree, uint max_colors);
         [DllImport("Octree.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern uint FromPallete(IntPtr octree, uint color);
         [DllImport("Octree.dll", CallingConvention = CallingConvention.Cdecl)]
