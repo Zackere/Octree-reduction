@@ -7,9 +7,6 @@ namespace Octree_gui {
         public Octree() {
             OctreePtr = CreateOctree();
         }
-        ~Octree() {
-            DestroyOctree(OctreePtr);
-        }
 
         public void InsertColor(Color color) {
             InsertColor(OctreePtr, (uint)color.ToArgb());

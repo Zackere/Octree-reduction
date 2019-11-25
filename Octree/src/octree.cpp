@@ -6,18 +6,16 @@ namespace gk3 {
 namespace {
 extern "C" uint8_t __cdecl GetIndex(uint8_t iteration, uint32_t color);
 }  // namespace
-Octree::Octree() : root_(new OctreeNode) {
-  nodes_on_level_ = std::vector<std::set<OctreeNode*>>(max_depth_);
-  nodes_on_level_[0].insert(root_.get());
+Octree::Octree() {
+  Clear();
 }
-
 void Octree::InsertColor(uint32_t color /*in ARGB format*/) {
   uint8_t child_index = 0, i;
   auto* cur_node = root_.get();
   for (i = 1; i < max_depth_ && !cur_node->refs; ++i) {
     child_index = GetIndex(kNumBitsPerByte - i, color);
     if (!cur_node->children[child_index]) {
-      nodes_on_level_[i].insert(
+      nodes_on_level_[i].push_back(
           (cur_node->children[child_index] = std::make_unique<OctreeNode>())
               .get());
       cur_node->children[child_index]->level = i;
@@ -48,16 +46,17 @@ void Octree::Reduce(unsigned max_colors) {
     return;
   CalculateChildrenRefSums();
   while (number_of_leaves_ > max_colors) {
-    auto* min_refs_node = *nodes_on_level_[last_nonempty_set_].begin();
-    auto min_refs = min_refs_node->children_ref_sum;
-    for (auto* node : nodes_on_level_[last_nonempty_set_]) {
-      auto ref_sum = node->children_ref_sum;
+    auto min_refs_node = nodes_on_level_[last_nonempty_set_].begin();
+    auto min_refs = (*min_refs_node)->children_ref_sum;
+    for (auto node = nodes_on_level_[last_nonempty_set_].begin();
+         node != nodes_on_level_[last_nonempty_set_].end(); ++node) {
+      auto ref_sum = (*node)->children_ref_sum;
       if ((ref_sum && min_refs > ref_sum) || !min_refs) {
         min_refs_node = node;
         min_refs = ref_sum;
       }
     }
-    number_of_leaves_ -= min_refs_node->Reduce();
+    number_of_leaves_ -= (*min_refs_node)->Reduce();
     nodes_on_level_[last_nonempty_set_].erase(min_refs_node);
     while (nodes_on_level_[last_nonempty_set_].empty())
       --last_nonempty_set_;
@@ -67,12 +66,8 @@ void Octree::Reduce(unsigned max_colors) {
 uint32_t Octree::FromPallete(uint32_t color) {
   uint8_t child_index = 0;
   auto* cur_node = root_.get();
-  for (uint8_t i = 1; i <= max_depth_ && !cur_node->refs; ++i) {
-    child_index = GetIndex(kNumBitsPerByte - i, color);
-    if (!cur_node)
-      return 0;
-    cur_node = cur_node->children[child_index].get();
-  }
+  for (uint8_t i = 1; i <= max_depth_ && !cur_node->refs; ++i)
+    cur_node = cur_node->children[GetIndex(kNumBitsPerByte - i, color)].get();
   uint32_t ret = 0xFF00;
   ret |= static_cast<uint8_t>(cur_node->r / cur_node->refs);
   ret <<= kNumBitsPerByte;
@@ -83,12 +78,10 @@ uint32_t Octree::FromPallete(uint32_t color) {
 }
 
 void Octree::Clear() {
-  root_->refs = root_->level = root_->r = root_->g = root_->b = 0;
+  root_.reset(new OctreeNode);
   last_nonempty_set_ = number_of_leaves_ = 0;
-  for (auto& child : root_->children)
-    child.reset();
-  nodes_on_level_ = std::vector<std::set<OctreeNode*>>(max_depth_);
-  nodes_on_level_[0].insert(root_.get());
+  nodes_on_level_ = std::vector<std::list<OctreeNode*>>(max_depth_);
+  nodes_on_level_[0].push_back(root_.get());
 }
 
 void Octree::SetOptimizationLevel(unsigned level) {
@@ -109,10 +102,12 @@ void Octree::SetOptimizationLevel(unsigned level) {
   }
 }
 
-void Octree::CalculateChildrenRefSums() {}
+void Octree::CalculateChildrenRefSums() {
+  root_->ChildrenRefSumRecursive();
+}
 
-int Octree::OctreeNode::Reduce() {
-  int ret = 0;
+uint32_t Octree::OctreeNode::Reduce() {
+  uint32_t ret = 0;
   for (auto& child : children) {
     if (child.get()) {
       refs += child->refs;
@@ -129,7 +124,8 @@ uint64_t Octree::OctreeNode::ChildrenRefSumRecursive() {
   children_ref_sum = 0;
   for (auto& child : children)
     if (child.get())
-      children_ref_sum += child->refs ? child->refs : ChildrenRefSumRecursive();
+      children_ref_sum +=
+          child->refs ? child->refs : child->ChildrenRefSumRecursive();
   return children_ref_sum;
 }
 }  // namespace gk3

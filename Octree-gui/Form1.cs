@@ -13,9 +13,7 @@ namespace Octree_gui {
     public partial class Form1 : Form {
         public Form1() {
             InitializeComponent();
-
             trackBar1_ValueChanged(null, null);
-
             mainDirectBitmap = new DirectBitmap(pictureBox1.Width - pictureBox1.Padding.Horizontal, pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = mainDirectBitmap.Bitmap;
             reducedAfterDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
@@ -26,17 +24,15 @@ namespace Octree_gui {
             octreeReduceOnInsert = new Octree();
         }
 
-        private Octree octreeReduceAfter, octreeReduceOnInsert;
+        private readonly Octree octreeReduceAfter, octreeReduceOnInsert;
         private DirectBitmap mainDirectBitmap;
         private DirectBitmap reducedAfterDirectBitmap, reducedOnInsertBitmap;
         private bool enableButtons = false;
         private BackgroundWorker t1, t2;
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-            if (!button1.Enabled) {
-                MessageBox.Show("Work in progress. Please Wait.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!button1.Enabled && MessageBox.Show("Work is still in progress. Are you sure you want to quit now?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 e.Cancel = true;
-            }
         }
 
         private void button2_Click(object sender, EventArgs e) {
@@ -51,15 +47,19 @@ namespace Octree_gui {
                         mainDirectBitmap.SetPixel(i, j, Image.GetPixel(i, j));
                 pictureBox1.Image = mainDirectBitmap.Bitmap;
 
+                reducedAfterDirectBitmap.Dispose();
                 reducedAfterDirectBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
                 pictureBox2.Image = reducedAfterDirectBitmap.Bitmap;
 
+                reducedOnInsertBitmap.Dispose();
                 reducedOnInsertBitmap = new DirectBitmap(mainDirectBitmap.Width, mainDirectBitmap.Height);
                 pictureBox3.Image = reducedOnInsertBitmap.Bitmap;
             }
         }
 
         private void button1_Click(object sender, EventArgs e) {
+            octreeReduceAfter.SetOptimizationLevel((uint)numericUpDown1.Value);
+            octreeReduceOnInsert.SetOptimizationLevel((uint)numericUpDown1.Value);
             octreeReduceAfter.Clear();
             octreeReduceOnInsert.Clear();
             uint max_colors = 7 + (uint)Math.Pow(1.5, trackBar1.Value);
