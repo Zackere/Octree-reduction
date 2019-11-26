@@ -4,23 +4,15 @@
 ;                                  RCX                 RDX
 GetIndex proc
     add rcx, 16
-    xor r8, r8
-    mov rax, rdx
-    shr rax, cl
-    and rax, 1
-    or r8, rax
-    shl r8, 1
+    xor rax, rax
+    bt rdx, rcx
+    adc rax, rax
     sub rcx, 8
-    mov rax, rdx
-    shr rax, cl
-    and rax, 1
-    or r8, rax
-    shl r8, 1
+    bt rdx, rcx
+    adc rax, rax
     sub rcx, 8
-    mov rax, rdx
-    shr rax, cl
-    and rax, 1
-    or rax, r8
+    bt rdx, rcx
+    adc rax, rax
     ret
 GetIndex endp
 

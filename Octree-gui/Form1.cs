@@ -78,7 +78,7 @@ namespace Octree_gui {
             };
             t1.RunWorkerCompleted += (_, __) => {
                 Refresh();
-                button1.Enabled = button2.Enabled = ControlBox = enableButtons;
+                button1.Enabled = button2.Enabled = enableButtons;
                 enableButtons = true;
             };
             t1.WorkerSupportsCancellation = true;
