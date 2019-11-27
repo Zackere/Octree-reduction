@@ -191,7 +191,7 @@
             this.ClientSize = new System.Drawing.Size(1792, 1125);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Octree Reduction";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
